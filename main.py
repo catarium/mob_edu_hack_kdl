@@ -1,10 +1,23 @@
-from sqlalchemy import create_engine
+import asyncio
+import logging
 
-from bot.core.config import config
-from bot.db.models.base import Base
-from bot.db.models.user import User, Teacher, Student
-from bot.db.models.classroom import Classroom
+from bot.misc import database_init, dp, bot, setup
 
-engine = create_engine(f'sqlite:///{config.DB_NAME}', echo=True)
+# import aioschedule as schedule
 
-Base.metadata.create_all(engine)
+logger = logging.getLogger(__name__)
+
+
+async def main():
+    # await notifier.enable()
+    setup()
+    database_init()
+    await dp.start_polling(bot)
+
+if __name__ == '__main__':
+    try:
+        loop = asyncio.get_event_loop()
+        loop.create_task(main())
+        loop.run_forever()
+    except (KeyboardInterrupt, SystemExit):
+        logger.error("Bot stopped!")
