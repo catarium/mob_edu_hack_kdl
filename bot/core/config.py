@@ -3,6 +3,7 @@ from pydantic_settings import BaseSettings
 
 class Settings(BaseSettings):
     TELEGRAM_TOKEN: str
+    DB_NAME: str
 
     class Config:
         env_file = '.env'
