@@ -18,4 +18,4 @@ async def reg(message: Message):
 
 @dp.message(F.text('Учитель'))
 async def teach(message: Message):
-    await
+    await async
