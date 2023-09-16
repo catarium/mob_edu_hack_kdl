@@ -18,3 +18,9 @@ class Classroom(Base):
     students: Mapped[List['Student']] = relationship(back_populates='classroom',
                                                      cascade='all, delete-orphan',
                                                      foreign_keys="Student.classroom_id")
+
+class Marks(Base):
+    teacher_id: Mapped[int] = relationship(back_populates='')
+    student_id: Mapped[int] = relationship(back_populates='')
+    theme: Mapped[str]
+
