@@ -6,7 +6,7 @@ from sqlalchemy.ext.declarative import declarative_base
 
 from bot.db.models.base import Base
 
-/
+
 
 class Teacher:
     __tablename__ = 'teacher'
