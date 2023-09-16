@@ -28,20 +28,6 @@ keyboard2 = InlineKeyboardMarkup(inline_keyboard=[[button_2]])
 keyboard1 = InlineKeyboardMarkup(inline_keyboard=[[button_1]])
 
 
-@dp.message(CommandStart())
-async def process_start_command(message: Message):
-    await message.answer(text='prof')
-
-
-@dp.message(Command(commands=['prof']))
-async def profile(message: Message):
-    with Session() as session:
-        stmt = select(with_polymorphic(User, [Teacher, Student])).where(User.telegram_id == message.from_user.id)
-        user = session.execute(stmt).one_or_none()
-    await message.answer(f'Имя: {user[2]}\nФамилия: {user[3]}\nСтатус: {user[4]}', reply_markup=keyboard1)
-
-
-
-
-if __name__ == '__main__':
-    dp.run_polling(bot)
+@dp.message(F.text == 'Расписание')
+async def timetable(less: list, message: Message):
+    await message.answer(text='\n'.join(less), reply_markup=keyboard2)
