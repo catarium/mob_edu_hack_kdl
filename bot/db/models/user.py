@@ -1,6 +1,7 @@
-from typing import List, Optional
+from typing import List, Optional, Any
 
 from sqlalchemy import ForeignKey
+from sqlalchemy.dialects.sqlite import JSON
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from bot.db.models.base import Base
@@ -24,13 +25,19 @@ class User(Base):
 class Teacher(User):
     classes: Mapped[List['Classroom']] = relationship(back_populates='teacher',
                                                      cascade='all, delete-orphan',
-                                                      foreign_keys='Classroom.teacher_id')
+                                                      foreign_keys='Classroom.teacher_id',
+                                                      lazy='selectin')
+    ways: Mapped[List['Way']] = relationship(back_populates='teacher',
+                                                      cascade='all, delete-orphan',
+                                                      foreign_keys='Way.teacher_id',
+                                                      lazy='selectin')
     __mapper_args__ = {
         "polymorphic_identity": "teacher"
     }
 
 
 class Student(User):
+    grades: Mapped[dict[str, Any]] = mapped_column(default={})
     rating: Mapped[int] = mapped_column(default=0)
     classroom_id: Mapped[Optional[int]] = mapped_column(ForeignKey('classroom.id'))
     classroom: Mapped[Optional['Classroom']] = relationship(back_populates='',

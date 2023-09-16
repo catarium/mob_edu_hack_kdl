@@ -4,6 +4,7 @@ from aiogram.types import Message, CallbackQuery
 
 from bot.db.crud.user import UserCRUD
 from bot.db.models.user import User
+from bot.handlers.keyboards.teacher_profile import get_teacher_profile_keyboard
 from bot.handlers.keyboards.user_type import get_user_type_keyboard
 from bot.handlers.states.auth import AuthGroup
 from bot.misc import dp, session_maker
@@ -22,11 +23,9 @@ async def home(message: Message, state: FSMContext):
     if not user:
         await message.answer('Кто вы?', reply_markup=get_user_type_keyboard())
     elif user.type == 'teacher':
-        pass
+        await message.answer('Профиль', reply_markup=get_teacher_profile_keyboard())
     elif user.type == 'student':
         pass
-
-
 
 
 async def teacher_home():

@@ -15,6 +15,7 @@ student_crud = StudentCRUD(session_maker)
 
 @dp.callback_query(F.data == 'type_teacher')
 async def teacher_auth(call: CallbackQuery, state: FSMContext):
+    await call.answer()
     await state.update_data(type='teacher')
     await state.set_state(AuthGroup.name)
     await call.message.answer('Введите имя')
@@ -36,3 +37,4 @@ async def lastname_entered(message: Message, state: FSMContext):
         print(teacher_crud.create(**data))
     elif data['type'] == 'student':
         student_crud.create(**data)
+    await state.clear()

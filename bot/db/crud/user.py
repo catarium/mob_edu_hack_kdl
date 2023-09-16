@@ -42,6 +42,14 @@ class TeacherCRUD:
     def __init__(self, sessionmaker: sessionmaker):
         self.Session = sessionmaker
 
+    def get_by_tg_id(self, telegram_id):
+        with self.Session() as session:
+            stmt = select(Teacher).where(Teacher.telegram_id == telegram_id)
+            teacher = session.execute(stmt).one_or_none()
+            if teacher:
+                return teacher[0]
+            return teacher
+
     def create(self, telegram_id, name, lastname, classes=[], **kwargs):
         with self.Session() as session:
             teacher = Teacher(

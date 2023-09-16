@@ -12,6 +12,9 @@ class Classroom(Base):
 
     id: Mapped[int] = mapped_column(primary_key=True)
     name: Mapped[str]
+    way_id: Mapped[int] = mapped_column(ForeignKey('way.id'))
+    way: Mapped['Way'] = relationship(back_populates='classes',
+                                      foreign_keys=[way_id])
     teacher_id: Mapped[int] = mapped_column(ForeignKey('user.id'))
     teacher: Mapped['Teacher'] = relationship(back_populates="classes",
                                               foreign_keys=[teacher_id])

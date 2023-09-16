@@ -20,6 +20,7 @@ def database_init():
     from bot.db.models.base import Base
     from bot.db.models.user import User, Student, Teacher
     from bot.db.models.classroom import Classroom
+    from bot.db.models.way import Way, Lesson
 
     Base.metadata.create_all(engine)
 
@@ -30,3 +31,6 @@ def database_init():
 def setup():
     import bot.handlers.home
     import bot.handlers.auth
+    import bot.handlers.teacher_classroom
+    import bot.handlers.create_classroom
+    import bot.handlers.create_way
