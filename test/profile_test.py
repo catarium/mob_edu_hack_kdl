@@ -34,9 +34,7 @@ async def process_start_command(message: Message):
 
 
 @dp.message(Command(commands=['prof']))
-@dp.callback_query
-async def profile(message: Message, state: FSMContext):
-    await state.get_data()
+async def profile(message: Message):
     with Session() as session:
         stmt = select(with_polymorphic(User, [Teacher, Student])).where(User.telegram_id == message.from_user.id)
         user = session.execute(stmt).one_or_none()
