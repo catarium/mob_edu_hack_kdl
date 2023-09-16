@@ -3,6 +3,14 @@ from aiogram.filters import Command, CommandStart
 from aiogram.types import Message, InlineKeyboardButton, InlineKeyboardMarkup, User
 from aiogram.types import Message, CallbackQuery
 from aiogram.fsm.context import FSMContext
+from sqlalchemy.orm import Session
+from typing import List
+
+from sqlalchemy import select
+from sqlalchemy.orm import Session, sessionmaker, with_polymorphic
+
+from bot.db.models.classroom import Classroom
+from bot.db.models.user import Teacher, Student, User
 
 from bot.db.crud.user import UserCRUD, TeacherCRUD, StudentCRUD
 from bot.db.models.user import User
@@ -27,9 +35,12 @@ async def process_start_command(message: Message):
 
 @dp.message(Command(commands=['prof']))
 @dp.callback_query
-async def profile(message: Message, call: CallbackQuery, state: FSMContext):
+async def profile(message: Message, state: FSMContext):
     await state.get_data()
-    await message.answer(f'Имя: {state.get_data()["name"]}', reply_markup=keyboard1)
+    with Session() as session:
+        stmt = select(with_polymorphic(User, [Teacher, Student])).where(User.telegram_id == message.from_user.id)
+        user = session.execute(stmt).one_or_none()
+    await message.answer(f'Имя: {user[2]}\nФамилия: {user[3]}\nСтатус: {user[4]}', reply_markup=keyboard1)
 
 
 
