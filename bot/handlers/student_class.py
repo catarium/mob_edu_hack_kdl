@@ -29,8 +29,6 @@ classroom_crud = ClassroomCRUD(session_maker)
 teacher_crud = TeacherCRUD(session_maker)
 lesson_crud = LessonCRUD(session_maker)
 student_crud = StudentCRUD(session_maker)
-
-
 @dp.message(F.text == '/class')
 async def bind_class(message: Message, state: FSMContext):
     await message.answer('Введите id класса')
@@ -41,6 +39,7 @@ async def bind_class(message: Message, state: FSMContext):
 async def class_id_entered(meessage: Message, state: FSMContext):
     student = student_crud.get_by_tg_id(meessage.from_user.id)
     classroom_crud.add_student(int(meessage.text), student.id)
+    await state.clear()
 
 
 @dp.message(F.text == '/program')
@@ -54,6 +53,7 @@ async def get_program(message: Message, state: FSMContext):
     msg = []
     for l in student.classroom.way.lessons:
         msg.append(l.name)
-        msg.append(str(student.grades[l.id]))
+        if str(l.id) in student.grades:
+            msg.append(str(student.grades[str(l.id)]))
     await message.answer('\n'.join(msg))
 

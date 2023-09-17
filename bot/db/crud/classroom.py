@@ -36,6 +36,8 @@ class ClassroomCRUD:
         with self.Session() as session:
             classroom = select(Classroom).where(Classroom.id == classroom_id)
             classroom = session.execute(classroom).one_or_none()[0]
+            student = select(Student).where(Student.id == student)
+            student = session.execute(student).one_or_none()[0]
             classroom.students.append(student)
             session.commit()
 

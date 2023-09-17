@@ -110,6 +110,6 @@ async def grade_entered(message: Message, state: FSMContext):
     await state.update_data(grade=message.text)
     data = await state.get_data()
     student = student_crud.get_by_id(int(data['student_id']))
-    await student_crud.add_grade(int(student.id), data['lesson_id'], message.text)
+    student_crud.add_grade(int(student.id), data['lesson_id'], message.text)
     await state.set_state(ClassMenuGroup.active)
 

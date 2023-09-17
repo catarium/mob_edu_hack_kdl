@@ -2,6 +2,7 @@ from typing import List
 
 from sqlalchemy import select
 from sqlalchemy.orm import Session, sessionmaker, with_polymorphic
+from sqlalchemy.orm.attributes import flag_modified
 
 from bot.db.models.classroom import Classroom
 from bot.db.models.user import Teacher, Student, User
@@ -33,14 +34,15 @@ class StudentCRUD:
             return lesson
 
     def add_grade(self, student_id, lesson_id, grade):
-        with self.Session() as session:
-            grade = int(grade)
-            stmt = select(Student).where(Student.id == student_id)
-            student = session.execute(stmt).one_or_none()[0]
-            d = student.grades
-            d[lesson_id] = grade
-            student.grades = d
-            session.commit()
+            with self.Session() as session:
+                grade = int(grade)
+                stmt = select(Student).where(Student.id == student_id)
+                student = session.execute(stmt).one_or_none()[0]
+                d = dict(student.grades)
+                d[lesson_id] = grade
+                student.grades = d
+                flag_modified(student, 'grades')
+                session.commit()
 
     def create(self, telegram_id, name, lastname, **kwargs) -> Student:
         with self.Session() as session:
