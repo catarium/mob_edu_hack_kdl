@@ -44,7 +44,14 @@ async def class_id_entered(meessage: Message, state: FSMContext):
 
 @dp.message(F.text == '/program')
 async def get_program(message: Message, state: FSMContext):
-    student: Student = student_crud.get_by_tg_id(meessage.from_user.id)
+    student: Student = student_crud.get_by_tg_id(message.from_user.id)
     if not student.classroom:
         return
-    lessons_ids = 'a'
+    lessons_ids = [l.id for l in student.classroom.way.lessons]
+    completed_lessons_ids = [l.id for l in student.classroom.completed_lessons]
+    msg = []
+    for l in student.classroom.way.lessons:
+        msg.append(l.name)
+        msg.append(str(student.grades[l.id]))
+    await message.answer('\n'.join(msg))
+

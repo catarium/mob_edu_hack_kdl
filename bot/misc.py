@@ -36,3 +36,4 @@ def setup():
     import bot.handlers.teacher_classroom
     import bot.handlers.create_classroom
     import bot.handlers.create_way
+    import bot.handlers.student_class
