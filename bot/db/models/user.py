@@ -40,7 +40,7 @@ class Student(User):
     grades: Mapped[dict[str, Any]] = mapped_column(default={})
     classroom_id: Mapped[Optional[int]] = mapped_column(ForeignKey('classroom.id'))
     classroom: Mapped[Optional['Classroom']] = relationship(back_populates='',
-                                                        foreign_keys=[classroom_id])
+                                                        foreign_keys=[classroom_id], lazy='selectin')
     __mapper_args__ = {
         "polymorphic_identity": "student"
     }
