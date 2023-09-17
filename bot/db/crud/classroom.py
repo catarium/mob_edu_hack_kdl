@@ -17,6 +17,15 @@ class ClassroomCRUD:
             classrooms = session.query(Classroom).all()
             return classrooms
 
+    def get_by_id(self, class_id):
+        with self.Session() as session:
+            stmt = select(Classroom).where(Classroom.id == class_id)
+            classroom = session.execute(stmt).one_or_none()
+            if classroom:
+                classroom = classroom[0]
+            return classroom
+
+
     def create(self, name: str, teacher: Teacher, way_id: int, **kwargs):
         with self.Session() as session:
             classroom = Classroom(name=name, teacher=teacher, students=[], way_id=way_id)

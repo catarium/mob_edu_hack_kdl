@@ -17,6 +17,7 @@ session_maker = sessionmaker(engine)
 
 
 def database_init():
+    print('creating tables')
     from bot.db.models.base import Base
     from bot.db.models.user import User, Student, Teacher
     from bot.db.models.classroom import Classroom

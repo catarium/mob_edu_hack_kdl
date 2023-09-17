@@ -38,7 +38,6 @@ class Teacher(User):
 
 class Student(User):
     grades: Mapped[dict[str, Any]] = mapped_column(default={})
-    rating: Mapped[int] = mapped_column(default=0)
     classroom_id: Mapped[Optional[int]] = mapped_column(ForeignKey('classroom.id'))
     classroom: Mapped[Optional['Classroom']] = relationship(back_populates='',
                                                         foreign_keys=[classroom_id])

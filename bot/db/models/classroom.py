@@ -20,4 +20,5 @@ class Classroom(Base):
                                               foreign_keys=[teacher_id])
     students: Mapped[List['Student']] = relationship(back_populates='classroom',
                                                      cascade='all, delete-orphan',
-                                                     foreign_keys="Student.classroom_id")
+                                                     foreign_keys="Student.classroom_id",
+                                                     lazy='selectin')
