@@ -21,6 +21,14 @@ async def teacher_auth(call: CallbackQuery, state: FSMContext):
     await call.message.answer('Введите имя')
 
 
+@dp.callback_query(F.data == 'type_student')
+async def teacher_auth(call: CallbackQuery, state: FSMContext):
+    await call.answer()
+    await state.update_data(type='student')
+    await state.set_state(AuthGroup.name)
+    await call.message.answer('Введите имя')
+
+
 @dp.message(AuthGroup.name)
 async def name_entered(message: Message, state: FSMContext):
     await state.update_data(name=message.text)

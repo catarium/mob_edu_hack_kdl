@@ -5,7 +5,7 @@ from sqlalchemy.orm import Session, sessionmaker
 
 from bot.db.models.classroom import Classroom
 from bot.db.models.user import Teacher, Student
-from bot.db.models.way import Way
+from bot.db.models.way import Way, Lesson
 
 
 class ClassroomCRUD:
@@ -32,7 +32,29 @@ class ClassroomCRUD:
             session.add(classroom)
             session.commit()
 
-    def add_students(self, classroom: Classroom, students: List[Student]):
+    def add_student(self, classroom_id: int, student: Student):
         with self.Session() as session:
-            classroom.students += students
+            classroom = select(Classroom).where(Classroom.id == classroom_id)
+            classroom = session.execute(classroom).one_or_none()[0]
+            classroom.students.append(student)
             session.commit()
+
+    def change_lesson_status(self, classroom: Classroom, lesson: Lesson):
+        with self.Session() as session:
+            # session.add(classroom)
+            # session.add(lesson)
+            lessons_ids = [l.id for l in classroom.way.lessons]
+            completed_lessons_ids = [l.id for l in classroom.completed_lessons]
+            if lesson.id not in lessons_ids:
+                return False
+            classroom = select(Classroom).where(Classroom.id == classroom.id)
+            classroom = session.execute(classroom).one_or_none()[0]
+            lesson = select(Lesson).where(Lesson.id == classroom.id)
+            lesson = session.execute(lesson).one_or_none()[0]
+            if lesson.id in completed_lessons_ids:
+                classroom.completed_lessons.remove(lesson)
+            else:
+                classroom.completed_lessons.append(lesson)
+            session.commit()
+            return True
+

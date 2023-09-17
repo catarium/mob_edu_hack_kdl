@@ -24,18 +24,42 @@ class StudentCRUD:
     def __init__(self, sessionmaker: sessionmaker):
         self.Session = sessionmaker
 
-    def create(self, telegram_id, name, lastname, rating=0, class_=None, **kwargs) -> Student:
+    def get_by_id(self, student_id):
+        with self.Session() as session:
+            stmt = select(Student).where(Student.id == student_id)
+            student = session.execute(stmt).one_or_none()
+            if student:
+                lesson = student[0]
+            return lesson
+
+    def add_grade(self, student_id, lesson_id, grade):
+        with self.Session() as session:
+            grade = int(grade)
+            stmt = select(Student).where(Student.id == student_id)
+            student = session.execute(stmt).one_or_none()[0]
+            d = student.grades
+            d[lesson_id] = grade
+            student.grades = d
+            session.commit()
+
+    def create(self, telegram_id, name, lastname, **kwargs) -> Student:
         with self.Session() as session:
             student = Student(
                 telegram_id=telegram_id,
                 name=name,
                 lastname=lastname,
-                rating=rating,
-                class_=class_
             )
             session.add(student)
             session.commit()
         return student
+
+    def get_by_tg_id(self, telegram_id):
+        with self.Session() as session:
+            stmt = select(Student).where(Student.telegram_id == telegram_id)
+            teacher = session.execute(stmt).one_or_none()
+            if teacher:
+                return teacher[0]
+            return teacher
 
 
 class TeacherCRUD:

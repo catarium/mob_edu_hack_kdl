@@ -22,6 +22,7 @@ def database_init():
     from bot.db.models.user import User, Student, Teacher
     from bot.db.models.classroom import Classroom
     from bot.db.models.way import Way, Lesson
+    from bot.db.models.classroom_lesson import association_table
 
     Base.metadata.create_all(engine)
 

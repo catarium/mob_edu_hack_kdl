@@ -43,3 +43,15 @@ class LessonCRUD:
             lesson = Lesson(name=name, way_id=way_id)
             session.add(lesson)
             session.commit()
+
+    def get_by_id(self, lesson_id):
+        with self.Session() as session:
+            stmt = select(Lesson).where(Lesson.id == lesson_id)
+            lesson = session.execute(stmt).one_or_none()
+            if lesson:
+                lesson = lesson[0]
+            return lesson
+
+    def get_all_lessons(self):
+        with self.Session() as session:
+            select(Lesson)

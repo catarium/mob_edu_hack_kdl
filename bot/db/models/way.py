@@ -4,6 +4,7 @@ from sqlalchemy import Column, Integer, Text, ForeignKey
 from sqlalchemy.orm import Mapped, relationship, mapped_column
 
 from bot.db.models.base import Base
+from bot.db.models.classroom_lesson import association_table
 from bot.db.models.user import Student
 
 
@@ -20,7 +21,8 @@ class Way(Base):
                                                    foreign_keys="Classroom.way_id")
     lessons: Mapped[List['Lesson']] = relationship(back_populates='way',
                                                      cascade='all, delete-orphan',
-                                                     foreign_keys="Lesson.way_id")
+                                                     foreign_keys="Lesson.way_id",
+                                                   lazy='selectin')
 
 
 class Lesson(Base):
@@ -31,6 +33,8 @@ class Lesson(Base):
     way_id: Mapped[int] = mapped_column(ForeignKey('way.id'))
     way: Mapped['Way'] = relationship(back_populates='lessons',
                                       foreign_keys=[way_id])
-
+    classrooms: Mapped[List['Classroom']] = relationship(back_populates='completed_lessons',
+                                                             secondary=association_table,
+                                                             lazy='selectin')
 
 
