@@ -34,6 +34,7 @@ student_crud = StudentCRUD(session_maker)
 @dp.message(F.text == '/class')
 async def bind_class(message: Message, state: FSMContext):
     await message.answer('Введите id класса')
+    await state.set_state(BindClassGroup.class_id)
 
 
 @dp.message(BindClassGroup.class_id)
@@ -46,6 +47,7 @@ async def class_id_entered(meessage: Message, state: FSMContext):
 async def get_program(message: Message, state: FSMContext):
     student: Student = student_crud.get_by_tg_id(message.from_user.id)
     if not student.classroom:
+        print('asdsa;dj')
         return
     lessons_ids = [l.id for l in student.classroom.way.lessons]
     completed_lessons_ids = [l.id for l in student.classroom.completed_lessons]
